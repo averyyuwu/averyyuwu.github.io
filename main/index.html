@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dracula">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css" />
+
+    <!--- Tailwind CSS & Daisy UI CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@2.18.0/dist/full.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2/dist/tailwind.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="res/favicon.ico" />
+
+    <title>task manager</title>
+  </head>
+  <body>
+    <!-- Global Status Elements -->
+    <div class="alert-message"></div>
+
+    <div class="author-text">
+      <p>Made by <b>Alex</b></p>
+    </div>
+
+    <!-- Main Container: Task Input and List -->
+    <div class="container">
+      <header>
+        <h1>Todo List</h1>
+        <div class="input-section">
+          <!-- Removed add-task-button from here -->
+        </div>
+      </header>
+
+      <div class="todos-filter">
+        <button class="btn m-1 sort-tasks-btn">Sort</button>
+        <button class="btn m-1 show-filters-btn">Filter</button>
+        <button class="btn m-1 reset-filters-btn">Reset Filters</button>
+        <input
+          type="text"
+          placeholder="Search tasks..."
+          class="input input-bordered input-secondary w-full search-input"
+        />
+        <!-- Added add-task-button here with new text -->
+        <button class="btn btn-secondary add-task-button">ADD TASK</button>
+        <input
+          type="file"
+          id="import-file"
+          accept=".json"
+          style="display: none"
+        />
+      </div>
+
+      <div class="table-wrapper">
+        <table class="table w-full">
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Status</th>
+              <th>Tags</th>
+              <th>Category</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody class="todos-list-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Left Sidebar: Tag and Category Management -->
+    <div class="sidebar">
+      <h2>Manage Tags</h2>
+      <div class="tag-management">
+        <div class="tag-input-group">
+          <input
+            type="text"
+            placeholder="Create a tag . . ."
+            class="input input-bordered input-secondary new-tag-input h-12"
+          />
+          <div class="tag-input-wrapper">
+            <div class="color-picker-wrapper">
+              <input type="color" class="tag-color-picker" value="#E67E22" />
+              <div class="color-preview tag-color-preview"></div>
+              <div class="color-picker-popup">
+                <div class="color-presets tag-presets"></div>
+                <div class="custom-color-input">
+                  <input type="text" placeholder="#HEX" class="tag-hex-input" />
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-secondary add-tag-button">Add Tag</button>
+          </div>
+        </div>
+        <ul class="tag-list">
+          <!-- Dynamically populated tag list -->
+        </ul>
+      </div>
+      <div class="sidebar-separator"></div>
+      <h2>Manage Categories</h2>
+      <div class="category-management">
+        <button class="btn btn-secondary add-category-button">
+          Add Category
+        </button>
+        <ul class="category-list">
+          <!-- Dynamically populated category list -->
+        </ul>
+      </div>
+    </div>
+
+    <!-- Top Right Controls: Theme and Data Management -->
+    <div class="theme-switcher">
+      <div class="dropdown dropdown-left">
+        <label tabindex="0" class="btn btn-ghost m-1">
+          <i class="bx bxs-palette bx-sm"></i>
+        </label>
+        <ul
+          tabindex="0"
+          class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+        >
+          <li class="theme-item" theme="light"><a>Day</a></li>
+          <li class="theme-item" theme="dracula"><a>Night</a></li>
+        </ul>
+      </div>
+      <button class="btn btn-ghost m-1 export-data-btn" title="Export Data">
+        <i class="bx bx-export bx-sm"></i>
+      </button>
+      <button class="btn btn-ghost m-1 import-data-btn" title="Import Data">
+        <i class="bx bx-import bx-sm"></i>
+      </button>
+      <button class="btn btn-ghost m-1" onclick="window.location.href='index.html'" title="Go to Home">
+        <i class="bx bx-home bx-sm"></i>
+      </button>
+      <button class="btn btn-ghost m-1" onclick="window.location.href='calendar/calendar.html'" title="Go to Calendar">
+        <i class="bx bx-calendar bx-sm"></i>
+      </button>
+    </div>
+
+    <!-- Filter Panel: Task Filtering Interface -->
+    <div class="filter-container">
+      <h2 class="text-xl font-bold mb-6">Filter Tasks</h2>
+
+      <div class="filter-section">
+        <h3>Status:</h3>
+        <div class="checkbox-group">
+          <label class="cursor-pointer label">
+            <span class="label-text">Archived</span>
+            <input
+              type="checkbox"
+              class="checkbox checkbox-primary"
+              data-status="archived"
+            />
+          </label>
+          <label class="cursor-pointer label">
+            <span class="label-text">Completed</span>
+            <input
+              type="checkbox"
+              class="checkbox checkbox-primary"
+              data-status="completed"
+            />
+          </label>
+          <label class="cursor-pointer label">
+            <span class="label-text">Pending</span>
+            <input
+              type="checkbox"
+              class="checkbox checkbox-primary"
+              data-status="pending"
+            />
+          </label>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <h3>Difficulty:</h3>
+        <div class="checkbox-group">
+          <label class="cursor-pointer label">
+            <span class="label-text">Easy</span>
+            <input
+              type="checkbox"
+              class="checkbox checkbox-primary"
+              data-difficulty="Easy"
+            />
+          </label>
+          <label class="cursor-pointer label">
+            <span class="label-text">Medium</span>
+            <input
+              type="checkbox"
+              class="checkbox checkbox-primary"
+              data-difficulty="Medium"
+            />
+          </label>
+          <label class="cursor-pointer label">
+            <span class="label-text">Hard</span>
+            <input
+              type="checkbox"
+              class="checkbox checkbox-primary"
+              data-difficulty="Hard"
+            />
+          </label>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <h3>Date:</h3>
+        <div class="date-range">
+          <div class="form-group">
+            <label>From:</label>
+            <input
+              type="date"
+              class="input input-bordered input-secondary filter-date-from"
+            />
+          </div>
+          <div class="form-group">
+            <label>To:</label>
+            <input
+              type="date"
+              class="input input-bordered input-secondary filter-date-to"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <h3>Tags:</h3>
+        <div class="settings-dropdown filter-tag-selector">
+          <div class="dropdown-selected">Select Tags</div>
+          <div class="dropdown-options"></div>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <h3>Categories:</h3>
+        <div class="settings-dropdown filter-category-selector">
+          <div class="dropdown-selected">Select Categories</div>
+          <div class="dropdown-options"></div>
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn cancel-filter-btn">Cancel</button>
+        <button class="btn btn-secondary apply-filters-btn">
+          Apply Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Task Settings Panel: Edit Task Details -->
+    <div class="settings-container">
+      <div class="settings-tabs">
+        <button class="tab-btn active" data-tab="details">Details</button>
+        <button class="tab-btn" data-tab="sub-tasks">Sub-Tasks</button>
+        <button class="tab-btn" data-tab="reminders">Reminders</button>
+      </div>
+
+      <div class="tab-content active" id="details-tab">
+        <div class="form-group">
+          <label>Task Name:</label>
+          <input
+            type="text"
+            class="edit-task-name input input-bordered input-secondary"
+            placeholder="Current task name"
+          />
+        </div>
+        <div class="form-group">
+          <label>Description:</label>
+          <textarea
+            class="edit-task-description input input-bordered input-secondary"
+            placeholder="Current description"
+          ></textarea>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Due Date:</label>
+            <input
+              type="date"
+              class="edit-due-date input input-bordered input-secondary"
+            />
+          </div>
+          <div class="form-group">
+            <label>Progress:</label>
+            <input
+              type="number"
+              class="edit-progress input input-bordered input-secondary"
+              min="0"
+              max="100"
+              placeholder="0%"
+            />
+          </div>
+          <div class="form-group">
+            <label>Tags:</label>
+            <div class="settings-dropdown edit-tag-selector">
+              <div class="dropdown-selected">Select Tag</div>
+              <div class="dropdown-options"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Categories:</label>
+            <div class="settings-dropdown edit-category-selector">
+              <div class="dropdown-selected">Select Category</div>
+              <div class="dropdown-options"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Display Bar:</label>
+          <select class="edit-display-bar input input-bordered input-secondary">
+            <option value="deadline">Deadline</option>
+            <option value="progress">Progress</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="tab-content" id="sub-tasks-tab">
+        <div class="sub-tasks-list">
+          <!-- Existing sub-tasks will be listed here -->
+        </div>
+        <button class="btn btn-secondary add-subtask-btn w-full">
+          + Add a subtask
+        </button>
+      </div>
+
+      <div class="tab-content" id="reminders-tab">
+        <div class="form-group">
+          <label>Reminder Date:</label>
+          <input
+            type="date"
+            class="edit-reminder-date input input-bordered input-secondary"
+          />
+        </div>
+        <div class="form-group">
+          <label>Reminder Time:</label>
+          <input
+            type="time"
+            class="edit-reminder-time input input-bordered input-secondary"
+          />
+        </div>
+        <div class="form-group">
+          <label>Reminder Note:</label>
+          <textarea
+            class="edit-reminder-note input input-bordered input-secondary"
+            placeholder="Enter reminder note..."
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="settings-actions">
+        <button class="btn btn-error delete-task-btn">Delete</button>
+        <div class="right-actions">
+          <button class="btn cancel-edit-btn">Cancel</button>
+          <button class="btn btn-secondary save-changes-btn">
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dim-overlay"></div>
+
+    <!-- Category Management Modal -->
+    <div class="add-category-modal">
+      <div class="modal-content">
+        <h2>Add a new category</h2>
+        <div class="modal-form">
+          <div class="form-group">
+            <label>Category Name:</label>
+            <input
+              type="text"
+              id="cat-name"
+              class="input input-bordered input-secondary"
+              placeholder="Enter category name..."
+            />
+          </div>
+          <div class="form-group">
+            <label>Color:</label>
+            <div class="color-picker-wrapper">
+              <div class="color-preview modal-color-preview"></div>
+              <div class="color-picker-popup">
+                <div class="color-presets modal-presets"></div>
+                <div class="custom-color-input">
+                  <input
+                    type="text"
+                    placeholder="#HEX"
+                    class="modal-hex-input"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Parent Category: (optional)</label>
+            <select
+              id="cat-parent"
+              class="input input-bordered input-secondary"
+            >
+              <option value="">— No parent —</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn" id="cancel-cat">Cancel</button>
+          <button class="btn btn-secondary" id="confirm-cat">
+            Add Category
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add New Task Modal -->
+    <div class="add-task-modal">
+      <div class="modal-content">
+        <h2 class="text-xl font-bold mb-6">Create New Task</h2>
+
+        <div class="modal-form">
+          <div class="form-group">
+            <label>Task Name:</label>
+            <input
+              type="text"
+              class="new-task-name input input-bordered input-secondary"
+              placeholder="Enter task name..."
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Description:</label>
+            <textarea
+              class="new-task-description input input-bordered input-secondary"
+              placeholder="Enter task description..."
+            ></textarea>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Due Date:</label>
+              <input
+                type="date"
+                class="new-task-date input input-bordered input-secondary"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Display Bar:</label>
+              <select
+                class="new-display-bar input input-bordered input-secondary"
+              >
+                <option value="deadline">Deadline</option>
+                <option value="progress">Progress</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Tags:</label>
+              <div class="settings-dropdown new-task-tag-selector">
+                <div class="dropdown-selected">Select Tags</div>
+                <div class="dropdown-options"></div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Category:</label>
+              <div class="settings-dropdown new-task-category-selector">
+                <div class="dropdown-selected">Select Categories</div>
+                <div class="dropdown-options"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <div class="right-actions">
+            <button class="btn cancel-task-btn">Cancel</button>
+            <button class="btn btn-secondary create-task-btn">
+              Create Task
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Sub-Task Modal -->
+    <div class="add-subtask-modal">
+      <div class="modal-content">
+        <h2 class="text-xl font-bold mb-6">Create New Sub-Task</h2>
+
+        <div class="modal-form">
+          <div class="form-group">
+            <label>Sub-Task Name:</label>
+            <input
+              type="text"
+              class="new-subtask-name input input-bordered input-secondary"
+              placeholder="Enter sub-task name..."
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Description:</label>
+            <textarea
+              class="new-subtask-description input input-bordered input-secondary"
+              placeholder="Enter sub-task description..."
+            ></textarea>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Due Date:</label>
+              <input
+                type="date"
+                class="new-subtask-date input input-bordered input-secondary"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Display Bar:</label>
+              <select
+                class="new-subtask-bar input input-bordered input-secondary"
+              >
+                <option value="deadline">Deadline</option>
+                <option value="progress">Progress</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Tags:</label>
+              <div class="settings-dropdown new-subtask-tag-selector">
+                <div class="dropdown-selected">Select Tags</div>
+                <div class="dropdown-options"></div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Category:</label>
+              <div class="settings-dropdown new-subtask-category-selector">
+                <div class="dropdown-selected">Select Categories</div>
+                <div class="dropdown-options"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Progress:</label>
+          <input
+            type="number"
+            class="new-subtask-progress input input-bordered input-secondary"
+            min="0"
+            max="100"
+            placeholder="0%"
+          />
+        </div>
+
+        <div class="modal-actions">
+          <div class="right-actions">
+            <button class="btn cancel-subtask-btn">Cancel</button>
+            <button class="btn btn-secondary create-subtask-btn">
+              Create Sub-Task
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sort Modal -->
+    <div class="sort-modal">
+      <div class="modal-content">
+        <h2 class="text-xl font-bold mb-6">Sort Tasks</h2>
+        <div class="modal-form">
+          <div class="form-group">
+            <label>Sort by:</label>
+            <select class="input input-bordered input-secondary sort-by-select">
+              <option value="dueDate">Due Date</option>
+              <option value="difficulty">Difficulty</option>
+              <option value="progress">Progress</option>
+              <option value="name">Task Name</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Order:</label>
+            <select
+              class="input input-bordered input-secondary sort-order-select"
+            >
+              <option value="asc">Ascending</option>
+              <option value="desc">Descending</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn cancel-sort-btn">Cancel</button>
+          <button class="btn btn-secondary apply-sort-btn">Apply Sort</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Import Confirmation Modal -->
+    <div class="import-confirm-modal">
+      <div class="modal-content">
+        <h2 class="text-xl font-bold mb-6">Import Data</h2>
+        <div class="modal-form">
+          <p class="import-confirm-message">
+            Importing data will overwrite existing data. Continue?
+          </p>
+        </div>
+        <div class="modal-actions">
+          <button class="btn cancel-import-btn">Cancel</button>
+          <button class="btn btn-secondary confirm-import-btn">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- External Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+    <!-- Application Scripts -->
+    <!-- Note: Order is important for proper initialization -->
+    <script src="js/app-data-manager.js"></script>
+    <script src="js/modules/todo-item-formatter.js"></script>
+    <script src="js/modules/todo-manager.js"></script>
+    <script src="js/modules/ui-manager.js"></script>
+    <script src="js/modules/theme-switcher.js"></script>
+    <script src="js/modules/tooltip.js"></script>
+    <script src="js/modules/notification-handler.js"></script>
+    <script src="js/modules/reminder-tester.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
