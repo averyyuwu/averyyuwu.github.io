@@ -1,0 +1,118 @@
+{
+  "version": "1.0.0",
+  "timestamp": "2025-05-07T10:00:00.000Z",
+  "theme": "dracula",
+  "todos": [
+    {
+      "id": "task1",
+      "task": "Complete project documentation",
+      "description": "Write detailed documentation for the project, including setup and usage instructions.",
+      "dueDate": "2025-05-10",
+      "completed": false,
+      "archived": false,
+      "status": "in-progress",
+      "tag": "Work, High Priority",
+      "category": "Work",
+      "displayBar": "progress",
+      "reminder": "2025-05-09T09:00:00.000Z"
+    },
+    {
+      "id": "task2",
+      "task": "Grocery shopping",
+      "description": "Buy groceries for the week, including fruits, vegetables, and snacks.",
+      "dueDate": "2025-05-08",
+      "completed": false,
+      "archived": false,
+      "status": "pending",
+      "tag": "Personal, Medium Priority",
+      "category": "Personal",
+      "displayBar": "none",
+      "reminder": null
+    },
+    {
+      "id": "task3",
+      "task": "Prepare presentation slides",
+      "description": "Create slides for the upcoming team meeting.",
+      "dueDate": "2025-05-09",
+      "completed": true,
+      "archived": false,
+      "status": "completed",
+      "tag": "Work, Medium Priority",
+      "category": "Work",
+      "displayBar": "none",
+      "reminder": null
+    },
+    {
+      "id": "task4",
+      "task": "Plan weekend trip",
+      "description": "Research destinations and create an itinerary for the weekend trip.",
+      "dueDate": "2025-05-12",
+      "completed": false,
+      "archived": false,
+      "status": "pending",
+      "tag": "Personal, Low Priority",
+      "category": "Travel",
+      "displayBar": "progress",
+      "reminder": "2025-05-11T18:00:00.000Z"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Easy",
+      "color": "#2ECC71"
+    },
+    {
+      "name": "Medium",
+      "color": "#F1C40F"
+    },
+    {
+      "name": "Hard",
+      "color": "#E74C3C"
+    },
+    {
+      "name": "Tag one",
+      "color": "#e67e22"
+    },
+    {
+      "name": "Tag 2",
+      "color": "#e67e22"
+    },
+    {
+      "name": "Work",
+      "color": "#3498DB"
+    },
+    {
+      "name": "Personal",
+      "color": "#9B59B6"
+    },
+    {
+      "name": "High Priority",
+      "color": "#E74C3C"
+    },
+    {
+      "name": "Medium Priority",
+      "color": "#F1C40F"
+    },
+    {
+      "name": "Low Priority",
+      "color": "#2ECC71"
+    }
+  ],
+  "categories": [
+    {
+      "name": "Work",
+      "color": "#2980B9",
+      "parent": null
+    },
+    {
+      "name": "Personal",
+      "color": "#8E44AD",
+      "parent": null
+    },
+    {
+      "name": "Travel",
+      "color": "#1ABC9C",
+      "parent": "Personal"
+    }
+  ]
+}
